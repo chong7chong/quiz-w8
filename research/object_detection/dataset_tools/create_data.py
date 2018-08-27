@@ -42,9 +42,9 @@ from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
 
 flags = tf.app.flags
-flags.DEFINE_string('data_dir', '', 'Root directory to raw pet dataset.')
-flags.DEFINE_string('output_dir', '', 'Path to directory to output TFRecords.')
-flags.DEFINE_string('label_map_path', 'data/labels_items.txt',
+flags.DEFINE_string('data_dir', 'quiz-w8-data', 'Root directory to raw pet dataset.')
+flags.DEFINE_string('output_dir', 'data-out', 'Path to directory to output TFRecords.')
+flags.DEFINE_string('label_map_path', 'quiz-w8-data/labels_items.txt',
                     'Path to label map proto')
 
 
