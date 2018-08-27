@@ -121,10 +121,10 @@ def dict_to_tf_example(data,
   width = int(data['size']['width'])
   height = int(data['size']['height'])
 
-  xmin = []
-  ymin = []
-  xmax = []
-  ymax = []
+  xmins = []
+  ymins = []
+  xmaxs = []
+  ymaxs = []
   classes = []
   classes_text = []
   truncated = []
@@ -142,19 +142,18 @@ def dict_to_tf_example(data,
 
 
 
+    xmin = float(obj['bndbox']['xmin'])
+    xmax = float(obj['bndbox']['xmax'])
+    ymin = float(obj['bndbox']['ymin'])
+    ymax = float(obj['bndbox']['ymax'])
 
- 
- 
+    xmins.append(xmin / width)
+    ymins.append(ymin / height)
+    xmaxs.append(xmax / width)
+    ymaxs.append(ymax / height)
 
- 
-
-    xmin.append(float(obj['bndbox']['xmin']) / width) 
-    ymin.append(float(obj['bndbox']['ymin']) / height) 
-    xmax.append(float(obj['bndbox']['xmax']) / width) 
-    ymax.append(float(obj['bndbox']['ymax']) / height) 
     classes_text.append(obj['name'].encode('utf8'))
     classes.append(label_map_dict[obj['name']])
-
     truncated.append(int(obj['truncated']))
     poses.append(obj['pose'].encode('utf8'))
 
@@ -171,10 +170,10 @@ def dict_to_tf_example(data,
       'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
       'image/encoded': dataset_util.bytes_feature(encoded_jpg),
       'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
-      'image/object/bbox/xmin': dataset_util.float_list_feature(xmin), 
-      'image/object/bbox/xmax': dataset_util.float_list_feature(xmax), 
-      'image/object/bbox/ymin': dataset_util.float_list_feature(ymin), 
-      'image/object/bbox/ymax': dataset_util.float_list_feature(ymax), 
+      'image/object/bbox/xmin': dataset_util.float_list_feature(xmins), 
+      'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs), 
+      'image/object/bbox/ymin': dataset_util.float_list_feature(ymins), 
+      'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs), 
       'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
       'image/object/class/label': dataset_util.int64_list_feature(classes),
       'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
@@ -185,8 +184,7 @@ def dict_to_tf_example(data,
 
 
 
-  print(classes)
-  print(classes_text)
+
   example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
   return example
 
